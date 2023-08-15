@@ -1,0 +1,614 @@
+import { View, Text, StyleSheet, FlatList, ScrollView } from "react-native";
+import { useState } from "react";
+import Pdf from "react-native-pdf";
+
+import { useBookListContext } from "../contexts/BookListContext";
+
+const HomeScreen = () => {
+  const { bookList } = useBookListContext();
+
+  const readLastItemView = ({ item }) => {
+    return (
+      <View style={styles.lastItemPdfView}>
+        {/* <Text style={styles.readlastItemView}>{item.name}</Text>*/}
+        <View style={styles.lastItemPdfDisplay}>
+          <Pdf
+            source={{ uri: bookList[item.id].uri }}
+            page={0}
+            horizontal={true}
+            enablePaging={true}
+            trustAllCerts={false}
+            fitWidth={true}
+            fitPolicy={2}
+            //scale={1}
+            enableRTL={true}
+            singlePage={true}
+            onLoadComplete={(numberOfPages, filePath) => {
+              //console.log(`Number of pages: ${numberOfPages}`);
+            }}
+            onError={(error) => {
+              console.log(error);
+            }}
+            style={styles.lastItemPdf}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <>
+      {/*console.log(bookList)*/}
+      {/*console.log(bookList[0].name)*/}
+      {/*console.log(bookList[0].uri)*/}
+      <View style={styles.container}>
+        {/*<Text style={styles.storage}>
+          {bookList
+            .map((book, index) => `${book.uri}, Name: ${book.name}`)
+            .join(", ")}
+        </Text>*/}
+
+        <Text style={styles.homeText}>Home</Text>
+        {bookList[0] !== undefined ? (
+          <>
+            <Text style={styles.currentPdfText}>Current </Text>
+
+            <View style={styles.currentPdfView}>
+              <View style={styles.currentPdfDisplay}>
+                <Pdf
+                  source={{ uri: bookList[0].uri }}
+                  page={0}
+                  horizontal={true}
+                  enablePaging={true}
+                  trustAllCerts={false}
+                  fitWidth={true}
+                  fitPolicy={2}
+                  //scale={1}
+                  enableRTL={true}
+                  singlePage={true}
+                  onLoadComplete={(numberOfPages, filePath) => {
+                    //console.log(`Number of pages: ${numberOfPages}`);
+                  }}
+                  onError={(error) => {
+                    console.log(error);
+                  }}
+                  style={styles.pdf}
+                />
+              </View>
+              <View style={styles.currentPdfInfoContainer}>
+                <Text style={styles.currentPdfName}>{bookList[0].name}</Text>
+                <Text style={styles.currentPdfInfoSettings}>...</Text>
+              </View>
+            </View>
+          </>
+        ) : null}
+        {bookList[1] !== undefined ? (
+          <View style={styles.lastReadContainer}>
+            <View style={styles.lastReadUpperTextContainer}>
+              <Text style={styles.lastReadText}> see All</Text>
+              <Text style={styles.bookListLengthText}>
+                {bookList.length - 1}  {">"}
+              </Text>
+            </View>
+            <FlatList
+              data={bookList}
+              horizontal={true}
+              renderItem={readLastItemView}
+              keyExtractor={(item) => item.id}
+            />
+          </View>
+        ) : null}
+      </View>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  lastItemPdf: {
+    flex: 1,
+    backgroundColor: "rgb(44, 44, 44)",
+    backgroundColor: "black",
+    borderColor: "white",
+    borderWidth: 0,
+    borderRadius: 5,
+    alignSelf: "stretch",
+    position: "relative",
+  },
+  lastItemPdfView: {
+    flexDirection: "row",
+    borderColor: "red",
+    borderWidth: 0,
+    height: 220,
+  },
+  lastItemPdfDisplay: {
+    backgroundColor: "black",
+    color: "white",
+    marginLeft: 25,
+    borderColor: "white",
+    borderWidth: 0,
+    borderRadius: 5,
+    width: 160,
+    height: 220,
+  },
+  lastReadUpperTextContainer: {
+    marginHorizontal: 20,
+    backgroundColor: "rgb(44, 44, 44)",
+    backgroundColor: "black",
+    flexDirection: "row",
+    borderColor: "red",
+    borderWidth: 0,
+    height: 50,
+    bottom: 10,
+    padding: 0,
+    width: 365,
+    borderColor: "rgb(112, 112, 112)",
+    borderRadius: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 2,
+    borderTopWidth: 2,
+  },
+  lastReadSeeAllText: {
+    color:'white', 
+    fontSize: 20,
+    fontWeight: "100",
+    marginLeft: 25,
+    bottom: 20,
+    fontStyle: 'italic',
+    
+  },
+  lastReadContainer: {
+    marginTop: 15,
+    backgroundColor: "rgb(44, 44, 44)",
+    backgroundColor: "black",
+    flexDirection: "column",
+    borderColor: "red",
+    borderWidth: 0,
+    height: 320,
+    bottom: 10,
+  },
+  lastReadText: {
+    marginLeft: 25,
+    color: "white",
+    right: 5,
+    marginTop: 6,
+    fontSize: 22,
+    fontStyle: "italic",
+    fontWeight: "normal",
+  },
+  bookListLengthText: {
+    left: 210,
+    color: "white",
+    marginLeft: 25,
+    marginTop: 6,
+    fontSize: 22,
+    fontStyle: "italic",
+    fontWeight: "normal",
+  },
+  currentPdfInfoContainer: {
+    marginTop: 20,
+    flex: 1,
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    borderColor: "white",
+    marginRight: 28,
+    borderWidth: 0,
+    height: 200,
+  },
+  currentPdfView: {
+    flexDirection: "row",
+    borderColor: "red",
+    borderWidth: 0,
+    height: 272,
+    bottom: 10,
+  },
+  pdf: {
+    flex: 1,
+    backgroundColor: "black",
+    borderColor: "white",
+    borderWidth: 0,
+    borderRadius: 5,
+    alignSelf: "stretch",
+    position: "relative",
+  },
+  storage: {
+    color: "white",
+    fontSize: 15,
+    marginLeft: 25,
+    marginRight: 25,
+    fontWeight: "bold",
+  },
+  currentPdfName: {
+    padding: 0,
+    marginLeft: 20,
+    paddingRight: 0,
+    bottom: 20,
+    color: "white",
+    fontSize: 15,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    fontWeight: "bold",
+  },
+  currentPdfInfoSettings: {
+    marginLeft: 0,
+    top: 10,
+    padding: 10,
+    paddingHorizontal: 15,
+    color: "grey",
+    fontSize: 20,
+    fontWeight: "900",
+    marginLeft: 123,
+    borderColor: "red",
+    borderWidth: 0,
+  },
+  currentPdfDisplay: {
+    marginLeft: 25,
+    borderColor: "white",
+    borderWidth: 0,
+    borderRadius: 5,
+    width: "45%",
+    height: 270,
+  },
+  homeText: {
+    color: "white",
+    fontSize: 40,
+    paddingTop: 10,
+    marginLeft: 25,
+    marginRight: 25,
+    fontWeight: "bold",
+    borderColor: "rgb(112, 112, 112)",
+    paddingBottom: 10,
+    borderBottomWidth: 2,
+  },
+  currentPdfText: {
+    color: "white",
+    padding: 10,
+    marginLeft: 15,
+    marginTop: 0,
+    fontSize: 22,
+    fontStyle: "italic",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+  },
+});
+
+export default HomeScreen;
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+import { View, Text, StyleSheet, FlatList, ScrollView } from "react-native";
+import { useState } from "react";
+import Pdf from "react-native-pdf";
+
+import { useBookListContext } from "../contexts/BookListContext";
+
+const HomeScreen = () => {
+  const { bookList } = useBookListContext();
+
+  const readLastItemView = ({ item }) => {
+    return (
+      <View style={styles.lastItemPdfView}>
+        {/* <Text style={styles.readlastItemView}>{item.name}</Text>*/}
+        <View style={styles.lastItemPdfDisplay}>
+          <Pdf
+            source={{ uri: bookList[item.id].uri }}
+            page={0}
+            horizontal={true}
+            enablePaging={true}
+            trustAllCerts={false}
+            fitWidth={true}
+            fitPolicy={2}
+            //scale={1}
+            enableRTL={true}
+            singlePage={true}
+            onLoadComplete={(numberOfPages, filePath) => {
+              //console.log(`Number of pages: ${numberOfPages}`);
+            }}
+            onError={(error) => {
+              console.log(error);
+            }}
+            style={styles.lastItemPdf}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <>
+      {/*console.log(bookList)*/}
+      {/*console.log(bookList[0].name)*/}
+      {/*console.log(bookList[0].uri)*/}
+      <ScrollView style={styles.container}>
+        {/*<Text style={styles.storage}>
+          {bookList
+            .map((book, index) => `${book.uri}, Name: ${book.name}`)
+            .join(", ")}
+        </Text>*/}
+
+        <Text style={styles.homeText}>Home</Text>
+        {bookList[0] !== undefined ? (
+          <>
+            <Text style={styles.currentPdfText}>Current </Text>
+
+            <View style={styles.currentPdfView}>
+              <View style={styles.currentPdfDisplay}>
+                <Pdf
+                  source={{ uri: bookList[0].uri }}
+                  page={0}
+                  horizontal={true}
+                  enablePaging={true}
+                  trustAllCerts={false}
+                  fitWidth={true}
+                  fitPolicy={2}
+                  //scale={1}
+                  enableRTL={true}
+                  singlePage={true}
+                  onLoadComplete={(numberOfPages, filePath) => {
+                    //console.log(`Number of pages: ${numberOfPages}`);
+                  }}
+                  onError={(error) => {
+                    console.log(error);
+                  }}
+                  style={styles.pdf}
+                />
+              </View>
+              <View style={styles.currentPdfInfoContainer}>
+                <Text style={styles.currentPdfName}>{bookList[0].name}</Text>
+                <Text style={styles.currentPdfInfoSettings}>...</Text>
+              </View>
+            </View>
+          </>
+        ) : null}
+        {bookList[1] !== undefined ? (
+          <View style={styles.lastReadContainer}>
+            <View style={styles.lastReadUpperTextContainer}>
+              <Text style={styles.lastReadText}> see All</Text>
+              <Text style={styles.bookListLengthText}>
+                {bookList.length - 1} {">"}
+              </Text>
+            </View>
+            <View style={styles.lastItemPdfView}>
+              <View style={styles.lastItemPdfDisplay}>
+                <Pdf
+                  source={{ uri: bookList[1].uri }}
+                  page={0}
+                  horizontal={true}
+                  enablePaging={true}
+                  trustAllCerts={false}
+                  fitWidth={true}
+                  fitPolicy={2}
+                  //scale={1}
+                  enableRTL={true}
+                  singlePage={true}
+                  onLoadComplete={(numberOfPages, filePath) => {
+                    //console.log(`Number of pages: ${numberOfPages}`);
+                  }}
+                  onError={(error) => {
+                    console.log(error);
+                  }}
+                  style={styles.lastItemPdf}
+                />
+              </View>
+              {bookList[2] !== undefined ? (
+                <View style={styles.lastItemPdfDisplay}>
+                  <Pdf
+                    source={{ uri: bookList[2].uri }}
+                    page={0}
+                    r
+                    horizontal={true}
+                    enablePaging={true}
+                    trustAllCerts={false}
+                    fitWidth={true}
+                    fitPolicy={2}
+                    //scale={1}
+                    enableRTL={true}
+                    singlePage={true}
+                    onLoadComplete={(numberOfPages, filePath) => {
+                      //console.log(`Number of pages: ${numberOfPages}`);
+                    }}
+                    onError={(error) => {
+                      console.log(error);
+                    }}
+                    style={styles.lastItemPdf}
+                  />
+                </View>
+              ) : null}
+            </View>
+            <View style={styles.lastReadBottomBorder}></View>
+          </View>
+        ) : null}
+      </ScrollView>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  lastItemPdf: {
+    flex: 1,
+    backgroundColor: "rgb(44, 44, 44)",
+    backgroundColor: "black",
+    borderColor: "white",
+    borderWidth: 0,
+    borderRadius: 5,
+    alignSelf: "stretch",
+    position: "relative",
+  },
+  lastItemPdfView: {
+    flexDirection: "row",
+    borderColor: "red",
+    borderWidth: 0,
+    height: 220,
+  },
+  lastItemPdfDisplay: {
+    backgroundColor: "black",
+    color: "white",
+    marginLeft: 25,
+    borderColor: "white",
+    borderWidth: 0,
+    borderRadius: 5,
+    width: 160,
+    height: 220,
+  },
+  lastReadUpperTextContainer: {
+    marginHorizontal: 20,
+    backgroundColor: "rgb(44, 44, 44)",
+    backgroundColor: "black",
+    flexDirection: "row",
+    borderColor: "red",
+    borderWidth: 0,
+    height: 50,
+    bottom: 3,
+    padding: 0,
+    width: 365,
+    borderColor: "rgb(112, 112, 112)",
+    borderRadius: 0,
+    paddingBottom: 10,
+    borderBottomWidth: 0,
+    borderTopWidth: 2.5,
+  },
+  lastReadSeeAllText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "100",
+    marginLeft: 25,
+    bottom: 20,
+    fontStyle: "italic",
+  },
+  lastReadContainer: {
+    marginTop: 15,
+    backgroundColor: "rgb(44, 44, 44)",
+    backgroundColor: "black",
+    flexDirection: "column",
+    borderColor: "red",
+    borderWidth: 0,
+    height: 320,
+    bottom: 10,
+    borderColor: "rgb(112, 112, 112)",
+    borderBottomWidth: 2,
+  },
+  lastReadText: {
+    marginLeft: 25,
+    color: "white",
+    right: 5,
+    marginTop: 6,
+    fontSize: 22,
+    fontStyle: "italic",
+    fontWeight: "normal",
+  },
+  bookListLengthText: {
+    left: 210,
+    color: "white",
+    marginLeft: 25,
+    marginTop: 6,
+    fontSize: 22,
+    fontStyle: "italic",
+    fontWeight: "normal",
+  },
+  currentPdfInfoContainer: {
+    marginTop: 20,
+    flex: 1,
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    borderColor: "white",
+    marginRight: 28,
+    borderWidth: 0,
+    height: 200,
+  },
+  currentPdfView: {
+    flexDirection: "row",
+    borderColor: "red",
+    borderWidth: 0,
+    height: 272,
+    bottom: 10,
+  },
+  pdf: {
+    flex: 1,
+    backgroundColor: "black",
+    borderColor: "white",
+    borderWidth: 0,
+    borderRadius: 5,
+    alignSelf: "stretch",
+    position: "relative",
+  },
+  storage: {
+    color: "white",
+    fontSize: 15,
+    marginLeft: 25,
+    marginRight: 25,
+    fontWeight: "bold",
+  },
+  currentPdfName: {
+    padding: 0,
+    marginLeft: 20,
+    paddingRight: 0,
+    bottom: 20,
+    color: "white",
+    fontSize: 15,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    fontWeight: "bold",
+  },
+  currentPdfInfoSettings: {
+    marginLeft: 0,
+    top: 10,
+    padding: 10,
+    paddingHorizontal: 15,
+    color: "grey",
+    fontSize: 20,
+    fontWeight: "900",
+    marginLeft: 123,
+    borderColor: "red",
+    borderWidth: 0,
+  },
+  currentPdfDisplay: {
+    marginLeft: 25,
+    borderColor: "white",
+    borderWidth: 0,
+    borderRadius: 5,
+    width: "45%",
+    height: 270,
+  },
+  homeText: {
+    color: "white",
+    fontSize: 40,
+    paddingTop: 10,
+    marginLeft: 25,
+    marginRight: 25,
+    fontWeight: "bold",
+    borderColor: "rgb(112, 112, 112)",
+    paddingBottom: 10,
+    borderBottomWidth: 2,
+  },
+  currentPdfText: {
+    color: "white",
+    padding: 10,
+    marginLeft: 15,
+    marginTop: 0,
+    fontSize: 22,
+    fontStyle: "italic",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+  },
+});
+
+export default HomeScreen;
